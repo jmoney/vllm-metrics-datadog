@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"bytes"
 	"fmt"
 	"io"
 	"log"
@@ -30,7 +31,8 @@ var (
 	// Error Logger
 	Error *log.Logger
 
-	metricsLocation string
+	metricsLocation   string
+	dogstatsdLocation string
 )
 
 func init() {
@@ -48,6 +50,7 @@ func init() {
 		log.Ldate|log.Ltime|log.Lshortfile)
 
 	metricsLocation = os.Getenv("METRICS_LOCATION")
+	dogstatsdLocation = os.Getenv("DD_DOGSTATSD_SOCKET")
 }
 
 func serializeLabels(labels map[string]string) []string {
@@ -143,19 +146,54 @@ func main() {
 	<-sig
 }
 
-func Processs() {
-	resp, err := http.Get(metricsLocation)
+func FetchMetrics(loc string) io.Reader {
+	resp, err := http.Get(loc)
 	if err != nil {
 		Error.Panic("Error fetching metrics:", err)
 	}
 	defer resp.Body.Close()
 
-	metrics := parseMetrics(resp.Body)
+	// Read the body into a byte slice
+	bodyBytes, err := io.ReadAll(resp.Body)
+	if err != nil {
+		log.Fatalf("Error reading response body: %v", err)
+	}
+
+	// Create an io.Reader from the byte slice
+	return bytes.NewReader(bodyBytes)
+}
+
+func ProcessFile(loc string) io.Reader {
+	file, err := os.Open(loc)
+	if err != nil {
+		Error.Panic("Error opening file:", err)
+	}
+	defer file.Close()
+
+	fileBytes, err := io.ReadAll(file)
+	if err != nil {
+		log.Fatalf("Error reading response body: %v", err)
+	}
+
+	return bytes.NewReader(fileBytes)
+}
+
+func Processs() {
+	var r io.Reader
+	if strings.HasPrefix(metricsLocation, "http") {
+		r = FetchMetrics(metricsLocation)
+	} else if strings.HasPrefix(metricsLocation, "file") {
+		r = ProcessFile(metricsLocation)
+	} else {
+		Error.Panicf("Invalid metrics location %s", metricsLocation)
+	}
+
+	metrics := parseMetrics(r)
 	fmt.Printf("%+v\n", metrics)
 }
 
 func PushMetrics(metrics []Metric) {
-	statsd, err := dogstatsd.New("")
+	statsd, err := dogstatsd.New(dogstatsdLocation)
 	if err != nil {
 		Error.Panic("Error creating statsd client:", err)
 	}
