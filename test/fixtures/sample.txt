@@ -1,0 +1,92 @@
+# HELP exceptions_total_counter Total number of requested which generated an exception
+# TYPE exceptions_total_counter counter
+# HELP requests_total_counter Total number of requests received
+# TYPE requests_total_counter counter
+requests_total_counter{method="POST",path="/v1/chat/completions"} 18
+# HELP responses_total_counter Total number of responses sent
+# TYPE responses_total_counter counter
+responses_total_counter{method="POST",path="/v1/chat/completions"} 18
+# HELP status_codes_counter Total number of response status codes
+# TYPE status_codes_counter counter
+status_codes_counter{method="POST",path="/v1/chat/completions",status_code="200"} 18
+# HELP vllm:avg_generation_throughput_toks_per_s Average generation throughput in tokens/s.
+# TYPE vllm:avg_generation_throughput_toks_per_s gauge
+vllm:avg_generation_throughput_toks_per_s{model_name="mistralai/Mixtral-8x7B-v0.1"} 0.0
+# HELP vllm:avg_prompt_throughput_toks_per_s Average prefill throughput in tokens/s.
+# TYPE vllm:avg_prompt_throughput_toks_per_s gauge
+vllm:avg_prompt_throughput_toks_per_s{model_name="mistralai/Mixtral-8x7B-v0.1"} 0.0
+# HELP vllm:cpu_cache_usage_perc CPU KV-cache usage. 1 means 100 percent usage.
+# TYPE vllm:cpu_cache_usage_perc gauge
+vllm:cpu_cache_usage_perc{model_name="mistralai/Mixtral-8x7B-v0.1"} 0.0
+# HELP vllm:e2e_request_latency_seconds Histogram of end to end request latency in seconds.
+# TYPE vllm:e2e_request_latency_seconds histogram
+vllm:e2e_request_latency_seconds_bucket{le="1.0",model_name="mistralai/Mixtral-8x7B-v0.1"} 1.0
+vllm:e2e_request_latency_seconds_bucket{le="2.5",model_name="mistralai/Mixtral-8x7B-v0.1"} 4.0
+vllm:e2e_request_latency_seconds_bucket{le="5.0",model_name="mistralai/Mixtral-8x7B-v0.1"} 5.0
+vllm:e2e_request_latency_seconds_bucket{le="10.0",model_name="mistralai/Mixtral-8x7B-v0.1"} 9.0
+vllm:e2e_request_latency_seconds_bucket{le="15.0",model_name="mistralai/Mixtral-8x7B-v0.1"} 12.0
+vllm:e2e_request_latency_seconds_bucket{le="20.0",model_name="mistralai/Mixtral-8x7B-v0.1"} 12.0
+vllm:e2e_request_latency_seconds_bucket{le="30.0",model_name="mistralai/Mixtral-8x7B-v0.1"} 13.0
+vllm:e2e_request_latency_seconds_bucket{le="40.0",model_name="mistralai/Mixtral-8x7B-v0.1"} 14.0
+vllm:e2e_request_latency_seconds_bucket{le="50.0",model_name="mistralai/Mixtral-8x7B-v0.1"} 14.0
+vllm:e2e_request_latency_seconds_bucket{le="60.0",model_name="mistralai/Mixtral-8x7B-v0.1"} 15.0
+vllm:e2e_request_latency_seconds_bucket{le="+Inf",model_name="mistralai/Mixtral-8x7B-v0.1"} 18.0
+vllm:e2e_request_latency_seconds_count{model_name="mistralai/Mixtral-8x7B-v0.1"} 18.0
+vllm:e2e_request_latency_seconds_sum{model_name="mistralai/Mixtral-8x7B-v0.1"} 1300.9264725030152
+# HELP vllm:generation_tokens_total Number of generation tokens processed.
+# TYPE vllm:generation_tokens_total counter
+vllm:generation_tokens_total{model_name="mistralai/Mixtral-8x7B-v0.1"} 58149
+# HELP vllm:gpu_cache_usage_perc GPU KV-cache usage. 1 means 100 percent usage.
+# TYPE vllm:gpu_cache_usage_perc gauge
+vllm:gpu_cache_usage_perc{model_name="mistralai/Mixtral-8x7B-v0.1"} 0.0
+# HELP vllm:num_requests_running Number of requests currently running on GPU.
+# TYPE vllm:num_requests_running gauge
+vllm:num_requests_running{model_name="mistralai/Mixtral-8x7B-v0.1"} 0
+# HELP vllm:num_requests_swapped Number of requests swapped to CPU.
+# TYPE vllm:num_requests_swapped gauge
+vllm:num_requests_swapped{model_name="mistralai/Mixtral-8x7B-v0.1"} 0
+# HELP vllm:num_requests_waiting Number of requests waiting to be processed.
+# TYPE vllm:num_requests_waiting gauge
+vllm:num_requests_waiting{model_name="mistralai/Mixtral-8x7B-v0.1"} 0
+# HELP vllm:prompt_tokens_total Number of prefill tokens processed.
+# TYPE vllm:prompt_tokens_total counter
+vllm:prompt_tokens_total{model_name="mistralai/Mixtral-8x7B-v0.1"} 14025
+# HELP vllm:time_per_output_token_seconds Histogram of time per output token in seconds.
+# TYPE vllm:time_per_output_token_seconds histogram
+vllm:time_per_output_token_seconds_bucket{le="0.01",model_name="mistralai/Mixtral-8x7B-v0.1"} 0.0
+vllm:time_per_output_token_seconds_bucket{le="0.025",model_name="mistralai/Mixtral-8x7B-v0.1"} 36336.0
+vllm:time_per_output_token_seconds_bucket{le="0.05",model_name="mistralai/Mixtral-8x7B-v0.1"} 58143.0
+vllm:time_per_output_token_seconds_bucket{le="0.075",model_name="mistralai/Mixtral-8x7B-v0.1"} 58146.0
+vllm:time_per_output_token_seconds_bucket{le="0.1",model_name="mistralai/Mixtral-8x7B-v0.1"} 58146.0
+vllm:time_per_output_token_seconds_bucket{le="0.15",model_name="mistralai/Mixtral-8x7B-v0.1"} 58146.0
+vllm:time_per_output_token_seconds_bucket{le="0.2",model_name="mistralai/Mixtral-8x7B-v0.1"} 58146.0
+vllm:time_per_output_token_seconds_bucket{le="0.3",model_name="mistralai/Mixtral-8x7B-v0.1"} 58149.0
+vllm:time_per_output_token_seconds_bucket{le="0.4",model_name="mistralai/Mixtral-8x7B-v0.1"} 58149.0
+vllm:time_per_output_token_seconds_bucket{le="0.5",model_name="mistralai/Mixtral-8x7B-v0.1"} 58149.0
+vllm:time_per_output_token_seconds_bucket{le="0.75",model_name="mistralai/Mixtral-8x7B-v0.1"} 58149.0
+vllm:time_per_output_token_seconds_bucket{le="1.0",model_name="mistralai/Mixtral-8x7B-v0.1"} 58149.0
+vllm:time_per_output_token_seconds_bucket{le="2.5",model_name="mistralai/Mixtral-8x7B-v0.1"} 58149.0
+vllm:time_per_output_token_seconds_bucket{le="+Inf",model_name="mistralai/Mixtral-8x7B-v0.1"} 58149.0
+vllm:time_per_output_token_seconds_count{model_name="mistralai/Mixtral-8x7B-v0.1"} 58149.0
+vllm:time_per_output_token_seconds_sum{model_name="mistralai/Mixtral-8x7B-v0.1"} 1294.1298678900203
+# HELP vllm:time_to_first_token_seconds Histogram of time to first token in seconds.
+# TYPE vllm:time_to_first_token_seconds histogram
+vllm:time_to_first_token_seconds_bucket{le="0.001",model_name="mistralai/Mixtral-8x7B-v0.1"} 0.0
+vllm:time_to_first_token_seconds_bucket{le="0.005",model_name="mistralai/Mixtral-8x7B-v0.1"} 0.0
+vllm:time_to_first_token_seconds_bucket{le="0.01",model_name="mistralai/Mixtral-8x7B-v0.1"} 0.0
+vllm:time_to_first_token_seconds_bucket{le="0.02",model_name="mistralai/Mixtral-8x7B-v0.1"} 0.0
+vllm:time_to_first_token_seconds_bucket{le="0.04",model_name="mistralai/Mixtral-8x7B-v0.1"} 0.0
+vllm:time_to_first_token_seconds_bucket{le="0.06",model_name="mistralai/Mixtral-8x7B-v0.1"} 10.0
+vllm:time_to_first_token_seconds_bucket{le="0.08",model_name="mistralai/Mixtral-8x7B-v0.1"} 10.0
+vllm:time_to_first_token_seconds_bucket{le="0.1",model_name="mistralai/Mixtral-8x7B-v0.1"} 10.0
+vllm:time_to_first_token_seconds_bucket{le="0.25",model_name="mistralai/Mixtral-8x7B-v0.1"} 10.0
+vllm:time_to_first_token_seconds_bucket{le="0.5",model_name="mistralai/Mixtral-8x7B-v0.1"} 10.0
+vllm:time_to_first_token_seconds_bucket{le="0.75",model_name="mistralai/Mixtral-8x7B-v0.1"} 11.0
+vllm:time_to_first_token_seconds_bucket{le="1.0",model_name="mistralai/Mixtral-8x7B-v0.1"} 18.0
+vllm:time_to_first_token_seconds_bucket{le="2.5",model_name="mistralai/Mixtral-8x7B-v0.1"} 18.0
+vllm:time_to_first_token_seconds_bucket{le="5.0",model_name="mistralai/Mixtral-8x7B-v0.1"} 18.0
+vllm:time_to_first_token_seconds_bucket{le="7.5",model_name="mistralai/Mixtral-8x7B-v0.1"} 18.0
+vllm:time_to_first_token_seconds_bucket{le="10.0",model_name="mistralai/Mixtral-8x7B-v0.1"} 18.0
+vllm:time_to_first_token_seconds_bucket{le="+Inf",model_name="mistralai/Mixtral-8x7B-v0.1"} 18.0
+vllm:time_to_first_token_seconds_count{model_name="mistralai/Mixtral-8x7B-v0.1"} 18.0
+vllm:time_to_first_token_seconds_sum{model_name="mistralai/Mixtral-8x7B-v0.1"} 6.796604612994997
