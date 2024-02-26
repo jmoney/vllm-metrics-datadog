@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -11,7 +12,8 @@ import (
 	"os"
 	"strings"
 
-	dogstatsd "github.com/DataDog/datadog-go/statsd"
+	ddlambda "github.com/DataDog/datadog-lambda-go"
+	"github.com/aws/aws-lambda-go/lambda"
 )
 
 // Metric represents a parsed Prometheus metric line.
@@ -29,8 +31,7 @@ var (
 	// Error Logger
 	Error *log.Logger
 
-	metricsLocation   string
-	dogstatsdLocation string
+	metricsLocation string
 )
 
 func init() {
@@ -129,6 +130,14 @@ func parseMetricLine(line string) (Metric, error) {
 }
 
 func main() {
+	if strings.HasPrefix(metricsLocation, "http") {
+		lambda.Start(ddlambda.WrapFunction(HandleRequest, nil))
+	} else {
+		HandleRequest(context.Background(), nil)
+	}
+}
+
+func HandleRequest(ctx context.Context, _ interface{}) {
 	var r io.Reader
 	if strings.HasPrefix(metricsLocation, "http") {
 		r = FetchMetrics(metricsLocation)
@@ -180,16 +189,7 @@ func ProcessFile(loc string) io.Reader {
 	return bytes.NewReader(fileBytes)
 }
 
-func Processs() {
-}
-
 func PushMetrics(metrics []Metric) {
-	statsd, err := dogstatsd.New(dogstatsdLocation)
-	if err != nil {
-		Error.Panic("Error creating statsd client:", err)
-	}
-	defer statsd.Close()
-
 	for _, metric := range metrics {
 
 		labels := serializeLabels(metric.Labels)
@@ -198,7 +198,6 @@ func PushMetrics(metrics []Metric) {
 			name = "vll." + name
 		}
 		name = strings.ReplaceAll(name, ":", ".")
-
-		statsd.Gauge(name, metric.Value, labels, 1)
+		ddlambda.Metric(name, metric.Value, labels...)
 	}
 }
