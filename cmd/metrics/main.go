@@ -3,17 +3,15 @@ package main
 import (
 	"bufio"
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"io"
 	"log"
 	"net/http"
 	"os"
-	"os/signal"
 	"strings"
-	"syscall"
 
 	dogstatsd "github.com/DataDog/datadog-go/statsd"
-	"github.com/robfig/cron"
 )
 
 // Metric represents a parsed Prometheus metric line.
@@ -50,7 +48,6 @@ func init() {
 		log.Ldate|log.Ltime|log.Lshortfile)
 
 	metricsLocation = os.Getenv("METRICS_LOCATION")
-	dogstatsdLocation = os.Getenv("DD_DOGSTATSD_SOCKET")
 }
 
 func serializeLabels(labels map[string]string) []string {
@@ -132,18 +129,22 @@ func parseMetricLine(line string) (Metric, error) {
 }
 
 func main() {
-	c := cron.New()
-
-	cronErr := c.AddFunc("1 * * * *", Processs)
-	if cronErr != nil {
-		Error.Printf("cron errored out: %v", cronErr)
-		return
+	var r io.Reader
+	if strings.HasPrefix(metricsLocation, "http") {
+		r = FetchMetrics(metricsLocation)
+	} else if strings.HasPrefix(metricsLocation, "file") {
+		r = ProcessFile(metricsLocation)
+	} else {
+		Error.Panicf("Invalid metrics location %s", metricsLocation)
 	}
 
-	go c.Start()
-	sig := make(chan os.Signal, 5)
-	signal.Notify(sig, syscall.SIGTERM, syscall.SIGINT)
-	<-sig
+	metrics := parseMetrics(r)
+	if !strings.HasPrefix(metricsLocation, "file") {
+		PushMetrics(metrics)
+	} else {
+		b, _ := json.Marshal(metrics)
+		fmt.Printf("%s\n", b)
+	}
 }
 
 func FetchMetrics(loc string) io.Reader {
@@ -164,6 +165,7 @@ func FetchMetrics(loc string) io.Reader {
 }
 
 func ProcessFile(loc string) io.Reader {
+	loc, _ = strings.CutPrefix(loc, "file://")
 	file, err := os.Open(loc)
 	if err != nil {
 		Error.Panic("Error opening file:", err)
@@ -179,17 +181,6 @@ func ProcessFile(loc string) io.Reader {
 }
 
 func Processs() {
-	var r io.Reader
-	if strings.HasPrefix(metricsLocation, "http") {
-		r = FetchMetrics(metricsLocation)
-	} else if strings.HasPrefix(metricsLocation, "file") {
-		r = ProcessFile(metricsLocation)
-	} else {
-		Error.Panicf("Invalid metrics location %s", metricsLocation)
-	}
-
-	metrics := parseMetrics(r)
-	fmt.Printf("%+v\n", metrics)
 }
 
 func PushMetrics(metrics []Metric) {
